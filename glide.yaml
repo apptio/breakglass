@@ -1,0 +1,15 @@
+package: github.com/apptio/breakglass
+import:
+- package: github.com/Sirupsen/logrus
+  version: ^1.0.3
+- package: github.com/bgentry/speakeasy
+  version: ^0.1.0
+- package: github.com/hashicorp/vault
+  version: ^0.8.2
+  subpackages:
+  - api
+- package: github.com/mitchellh/go-homedir
+- package: github.com/mitchellh/mapstructure
+- package: github.com/spf13/cobra
+- package: github.com/spf13/viper
+  version: ^1.0.0
