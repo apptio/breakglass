@@ -47,9 +47,9 @@ var Version string
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
 	Use:   "breakglass",
-	Short: "Get elevated privileges on Apptio Infrastructure",
+	Short: "Get credentials from Hashicorp Vault",
 	Long: `breakglass allows you to get login credentials for a variety of 
-Apptio infrastructure, such as databases servers, Linux servers (ssh credentials)
+Vault backends, such as databases servers, Linux servers (ssh credentials)
 and AWS IAM roles`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:

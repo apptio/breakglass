@@ -23,8 +23,7 @@ All mysql databases should be mounted under `/mysql/<hostname>` in vault for exa
 To use breakglass, simply download the binary. Run the command with no arguments to see the possible commands:
 
 ```bash
-breakglass allows you to get login credentials for a variety of
-Apptio infrastructure, such as databases servers, Linux servers (ssh credentials)
+breakglass allows you to get login credentials for a variety of vault backends, such as databases servers, Linux servers (ssh credentials)
 and AWS IAM roles
 
 Usage:
