@@ -4,7 +4,7 @@ clean:
 	@rm -rf ./dist
 
 build: clean
-	@goxc -pv=v$(version)-$(RELEASE)
+	@goxc -pv=$(version)-$(RELEASE)
 
 version:
 	@echo $(RELEASE)
