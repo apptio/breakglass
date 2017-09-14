@@ -1,5 +1,5 @@
 {
-	"AppName": "unseal",
+	"AppName": "breakglass",
 	"ArtifactsDest": "downloads",
 	"Tasks": [
 		"interpolate-source",
