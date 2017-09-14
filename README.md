@@ -115,7 +115,7 @@ You can then use these credentials to connect to the Linux server you specified.
 
 # Building
 
-See the (docs)[docs/BUILDING.md]
+See the [docs](docs/BUILDING.md)
 
 # Contributing
 
@@ -123,4 +123,6 @@ Fork the repo in gitlab and send a merge request!
 
 # Caveats
 
-There are currently no tests, and the code is not very (DRUY)[https://en.wikipedia.org/wiki/Don%27t_repeat_yourself]. This was Apptio's first exercise in Go, and pull requests are very welcome.
+There are currently no tests, and the code is not very [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself).
+
+This was Apptio's first exercise in Go, and pull requests are very welcome.
