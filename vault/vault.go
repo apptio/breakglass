@@ -8,14 +8,22 @@ import (
 	"github.com/hashicorp/vault/api"
 )
 
+type Params struct {
+	Username string
+	Password string
+	Method   string
+	Host     string
+	Port     int
+}
+
 const (
 	apiVersion = "v1"
 )
 
-func New(username string, password string, method string, host string, port int) (*api.Client, error) {
+func New(p Params) (*api.Client, error) {
 
 	// create the login URL
-	url := fmt.Sprintf("https://%s:%v", host, port)
+	url := fmt.Sprintf("https://%s:%v", p.Host, p.Port)
 
 	log.Debug("Using Vault URL: ", url)
 
@@ -36,11 +44,11 @@ func New(username string, password string, method string, host string, port int)
 
 	// set password for auth
 	options := map[string]interface{}{
-		"password": password,
+		"password": p.Password,
 	}
 
 	// create the login URL
-	path := fmt.Sprintf("auth/%s/login/%s", method, username)
+	path := fmt.Sprintf("auth/%s/login/%s", p.Method, p.Username)
 
 	log.Debug("Login path: ", path)
 

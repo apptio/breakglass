@@ -118,7 +118,7 @@ user, which has elevated sudo permissions on Linux machines.`,
 
 		userPass, _ = speakeasy.Ask("Please enter your password: ")
 
-		client, err := v.New(userName, userPass, authMethod, vaultHost, vaultPort)
+		client, err := v.New(v.Params{Username: userName, Password: userPass, Method: authMethod, Host: vaultHost, Port: vaultPort})
 
 		if err != nil {
 			log.Fatal("Error logging into vault: ", err)

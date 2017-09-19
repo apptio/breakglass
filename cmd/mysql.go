@@ -88,7 +88,7 @@ and returns a user name and password you can use to login`,
 
 		userPass, _ = speakeasy.Ask("Please enter your password: ")
 
-		client, err := v.New(userName, userPass, authMethod, vaultHost, vaultPort)
+		client, err := v.New(v.Params{Username: userName, Password: userPass, Method: authMethod, Host: vaultHost, Port: vaultPort})
 
 		mysql, err := client.Logical().Read("mysql/" + mysqlHost + "/creds/" + mysqlRole)
 
