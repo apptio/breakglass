@@ -23,10 +23,7 @@ package cmd
 import (
 	"os"
 
-	v "github.com/apptio/breakglass/vault"
-
 	log "github.com/Sirupsen/logrus"
-	"github.com/bgentry/speakeasy"
 	//"github.com/davecgh/go-spew/spew"
 	//"github.com/mitchellh/mapstructure"
 
@@ -49,23 +46,15 @@ var dockerCmd = &cobra.Command{
 	Long:  `Will grab a TLS cert from the Vault PKI, and then use it to connect to a Docker Daemon on a remote host you specify`,
 	Run: func(cmd *cobra.Command, args []string) {
 
+		// setup debug
 		debug = viper.GetBool("debug")
 
 		if debug == true {
 			log.SetLevel(log.DebugLevel)
 		}
 
-		userName = viper.GetString("username")
-		authMethod = viper.GetString("authmethod")
-		vaultHost = viper.GetString("vault")
-
-		userPass, _ = speakeasy.Ask("Please enter your password: ")
-
-		client, err := v.New(userName, userPass, authMethod, vaultHost, vaultPort)
-
-		if err != nil {
-			log.Fatal("Error logging into vault: ", err)
-		}
+		// get vault client
+		client := getVaultClient()
 
 		options := map[string]interface{}{
 			"format":      "pem",

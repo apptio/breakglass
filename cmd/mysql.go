@@ -25,9 +25,6 @@ import (
 	"os"
 	"os/exec"
 
-	v "github.com/apptio/breakglass/vault"
-	"github.com/bgentry/speakeasy"
-
 	//"github.com/acidlemon/go-dumper"
 	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/cobra"
@@ -57,6 +54,7 @@ var mysqlCmd = &cobra.Command{
 and returns a user name and password you can use to login`,
 	Run: func(cmd *cobra.Command, args []string) {
 
+		// setup debug
 		debug = viper.GetBool("debug")
 		execConn = viper.GetBool("exec")
 
@@ -64,31 +62,15 @@ and returns a user name and password you can use to login`,
 			log.SetLevel(log.DebugLevel)
 		}
 
+		// check specific info
 		if mysqlHost == "" {
 			log.Fatal("No MySQL host specified. See --help")
 		}
 
-		userName = viper.GetString("username")
-		authMethod = viper.GetString("authmethod")
-		vaultHost = viper.GetString("vault")
+		log.Debug("mysql host is: ", sshHost)
 
-		log.WithFields(log.Fields{"username": userName,
-			"authmethod": authMethod,
-			"vaulthost":  vaultHost,
-			"vaultport":  vaultPort}).Debug("mysql host is: ", sshHost)
-
-		if vaultHost == "" {
-			log.Fatal("No Vault host specified. See --help")
-		}
-
-		log.WithFields(log.Fields{"username": userName,
-			"authmethod": authMethod,
-			"vaulthost":  vaultHost,
-			"vaultport":  vaultPort}).Debug("prompting for password")
-
-		userPass, _ = speakeasy.Ask("Please enter your password: ")
-
-		client, err := v.New(userName, userPass, authMethod, vaultHost, vaultPort)
+		// get vault client
+		client := getVaultClient()
 
 		mysql, err := client.Logical().Read("mysql/" + mysqlHost + "/creds/" + mysqlRole)
 
