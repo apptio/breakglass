@@ -24,7 +24,11 @@ import (
 	"fmt"
 	"os"
 	"os/user"
+	"strings"
 
+	"github.com/apptio/breakglass/vault"
+	"github.com/bgentry/speakeasy"
+	"github.com/hashicorp/vault/api"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
@@ -109,4 +113,37 @@ func initConfig() {
 	viper.SetDefault("username", currentUser.Username)
 	viper.SetDefault("authmethod", "ldap")
 
+}
+
+func getPassword() string {
+	password, _ := speakeasy.Ask("Please enter your password: ")
+	return strings.TrimSpace(password)
+}
+
+func getVaultClient() *api.Client {
+	// get main auth info
+	userName = viper.GetString("username")
+	authMethod = viper.GetString("authmethod")
+	vaultHost = viper.GetString("vault")
+
+	if vaultHost == "" {
+		log.Fatal("No Vault host specified. See --help")
+	}
+
+	// get password
+	log.WithFields(log.Fields{"username": userName,
+		"authmethod": authMethod,
+		"vaulthost":  vaultHost,
+		"vaultport":  vaultPort}).Debug("prompting for password")
+
+	userPass = getPassword()
+
+	// create client
+	client, err := vault.New(userName, userPass, authMethod, vaultHost, vaultPort)
+
+	if err != nil {
+		log.Fatal("Error logging into vault: ", err)
+	}
+
+	return client
 }
