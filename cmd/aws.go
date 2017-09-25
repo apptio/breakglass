@@ -29,7 +29,6 @@ import (
 	"syscall"
 	"time"
 
-	v "github.com/apptio/breakglass/vault"
 	garbler "github.com/michaelbironneau/garbler/lib"
 
 	//"github.com/acidlemon/go-dumper"
@@ -38,7 +37,6 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/iam"
-	"github.com/bgentry/speakeasy"
 	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -55,7 +53,7 @@ type AWSCredentialResp struct {
 	SecurityToken string `mapstructure:"security_token"`
 }
 
-// mysqlCmd represents the mysql command
+// awsCmd represents the aws command
 var awsCmd = &cobra.Command{
 	Use:   "aws",
 	Short: "Get temporary login credentials for aws",
@@ -73,28 +71,8 @@ and returns a user name and password you can use to login`,
 			log.Fatal("No AWS role host specified. See --help")
 		}
 
-		userName = viper.GetString("username")
-		authMethod = viper.GetString("authmethod")
-		vaultHost = viper.GetString("vault")
-
-		log.WithFields(log.Fields{"username": userName,
-			"authmethod": authMethod,
-			"vaulthost":  vaultHost,
-			"vaultport":  vaultPort}).Debug("mysql host is: ", sshHost)
-
-		if vaultHost == "" {
-			log.Fatal("No Vault host specified. See --help")
-		}
-
-		log.WithFields(log.Fields{"username": userName,
-			"authmethod": authMethod,
-			"vaulthost":  vaultHost,
-			"vaultport":  vaultPort}).Debug("prompting for password")
-
-		userPass, _ = speakeasy.Ask("Please enter your password: ")
-
 		// Get a Vault client
-		client, err := v.New(userName, userPass, authMethod, vaultHost, vaultPort)
+		client := getVaultClient()
 
 		// Read new AWS credentials from Vault
 		log.Debug("Reading Vault role: ", awsRole)
@@ -118,7 +96,7 @@ and returns a user name and password you can use to login`,
 
 		// Quit unless we're creating a login profile
 		if !awsCreateLoginProfile {
-			os.Exit(0)
+			return
 		}
 
 		// Set up AWS credentials
@@ -168,7 +146,7 @@ and returns a user name and password you can use to login`,
 		// Generate random password
 		reqs := garbler.PasswordStrengthRequirements{
 			MinimumTotalLength: 20,
-			Punctuation:        5,
+			Punctuation:        10,
 			Uppercase:          1,
 			Digits:             1,
 		}
@@ -244,7 +222,7 @@ func init() {
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// mysqlCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// awsCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
