@@ -26,11 +26,9 @@ import (
 	"os"
 	"os/exec"
 
-	v "github.com/apptio/breakglass/vault"
-
 	log "github.com/Sirupsen/logrus"
 	//"github.com/acidlemon/go-dumper"
-	"github.com/bgentry/speakeasy"
+
 	"github.com/mitchellh/mapstructure"
 	//"github.com/hashicorp/vault/api"
 	"github.com/spf13/cobra"
@@ -67,6 +65,7 @@ into Linux servers. The credentials are generated for a "breakglass"
 user, which has elevated sudo permissions on Linux machines.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
+		// setup debug
 		debug = viper.GetBool("debug")
 		execConn = viper.GetBool("exec")
 
@@ -74,25 +73,16 @@ user, which has elevated sudo permissions on Linux machines.`,
 			log.SetLevel(log.DebugLevel)
 		}
 
+		// check specific info
 		if sshHost == "" {
 			log.Fatal("No SSH host specified. See --help")
 		}
 
-		userName = viper.GetString("username")
-		authMethod = viper.GetString("authmethod")
-		vaultHost = viper.GetString("vault")
-
-		log.WithFields(log.Fields{"username": userName,
-			"authmethod": authMethod,
-			"vaulthost":  vaultHost,
-			"vaultport":  vaultPort}).Debug("ssh host is: ", sshHost)
+		log.Debug("ssh host is: ", sshHost)
 
 		//do a reverse DNS lookup to get the IP
 		ip, err := net.LookupHost(sshHost)
-		log.WithFields(log.Fields{"username": userName,
-			"authmethod": authMethod,
-			"vaulthost":  vaultHost,
-			"vaultport":  vaultPort}).Debug("returned IP is: ", ip[0])
+		log.Debug("returned IP is: ", ip[0])
 
 		if err != nil {
 			log.Fatal("Error getting host IP: ", err)
@@ -102,27 +92,8 @@ user, which has elevated sudo permissions on Linux machines.`,
 			log.Fatal("Error: returned more than 1 IP - check reverse DNS: ", ip)
 		}
 
-		log.WithFields(log.Fields{"username": userName,
-			"authmethod": authMethod,
-			"vaulthost":  vaultHost,
-			"vaultport":  vaultPort}).Debug("Creating vault client")
-
-		if vaultHost == "" {
-			log.Fatal("No Vault host specified. See --help")
-		}
-
-		log.WithFields(log.Fields{"username": userName,
-			"authmethod": authMethod,
-			"vaulthost":  vaultHost,
-			"vaultport":  vaultPort}).Debug("Prompting for password")
-
-		userPass, _ = speakeasy.Ask("Please enter your password: ")
-
-		client, err := v.New(userName, userPass, authMethod, vaultHost, vaultPort)
-
-		if err != nil {
-			log.Fatal("Error logging into vault: ", err)
-		}
+		// get vault client
+		client := getVaultClient()
 
 		options := map[string]interface{}{
 			"ip":       ip[0],
