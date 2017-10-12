@@ -58,8 +58,6 @@ and returns a user name and password you can use to login`,
 		debug = viper.GetBool("debug")
 		execConn = viper.GetBool("exec")
 
-		mysqlHost = viper.GetString("mysqlhost")
-
 		if debug == true {
 			log.SetLevel(log.DebugLevel)
 		}
@@ -135,6 +133,5 @@ func init() {
 	// is called directly, e.g.:
 	mysqlCmd.Flags().StringVarP(&mysqlHost, "host", "H", "", "MySQL Host to get credentials for")
 	mysqlCmd.Flags().StringVarP(&mysqlRole, "role", "r", "readonly", "MySQL role to get credentials for")
-	viper.BindPFlag("host", mysqlCmd.Flags().Lookup("mysqlhost"))
 
 }
