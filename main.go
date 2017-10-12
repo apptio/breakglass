@@ -22,9 +22,8 @@ package main
 
 import "github.com/apptio/breakglass/cmd"
 
-const VERSION = "0.2.3-c0a7cec"
-const SOURCE_DATE = "2017-09-14T11:16:05-07:00"
+var Version = "v0.0.1"
 
 func main() {
-	cmd.Execute(VERSION)
+	cmd.Execute(Version)
 }
