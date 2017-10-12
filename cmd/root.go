@@ -74,7 +74,7 @@ func init() {
 	cobra.OnInitialize(initConfig)
 
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.breakglass/config.yaml)")
-	RootCmd.PersistentFlags().StringVarP(&vaultHost, "vault", "v", "", "vault host to authenticate against")
+	RootCmd.PersistentFlags().StringVarP(&vaultHost, "vault", "v", "vault", "vault host to authenticate against")
 	RootCmd.PersistentFlags().IntVarP(&vaultPort, "port", "p", 8200, "port of vault servers to use when authenticating")
 	RootCmd.PersistentFlags().BoolVarP(&debug, "debug", "", false, "enable debug logging")
 	RootCmd.PersistentFlags().BoolVarP(&execConn, "exec", "", false, "Initiate connection with credentials")
